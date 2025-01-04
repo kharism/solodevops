@@ -15,8 +15,10 @@ type PlayerMoveSystem struct {
 func (p *PlayerMoveSystem) Update(ecs *ecslib.ECS) {
 	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
 		component.ScreenPos.Get(p.PlayerIndex).X += 3
+		component.HitBox.Get(p.PlayerIndex).X += 3
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
 		component.ScreenPos.Get(p.PlayerIndex).X -= 3
+		component.HitBox.Get(p.PlayerIndex).X -= 3
 	}
 }
