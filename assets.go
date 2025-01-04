@@ -38,6 +38,12 @@ var monster_sprite_1 []byte
 //go:embed images/monster_sprite_2.png
 var monster_sprite_2 []byte
 
+//go:embed images/heart.png
+var heart []byte
+
+//go:embed images/heart_empty.png
+var heart_empty []byte
+
 //go:embed images/lobby.png
 var lobby []byte
 
@@ -69,6 +75,9 @@ var OmarSprite2 *ebiten.Image
 
 var MonsterSprite1 *ebiten.Image
 var MonsterSprite2 *ebiten.Image
+
+var Heart *ebiten.Image
+var HeartEmpty *ebiten.Image
 
 func init() {
 	s, err := text.NewGoTextFaceSource(bytes.NewReader(PixelFontTTF))
@@ -115,5 +124,13 @@ func init() {
 	if MonsterSprite2 == nil {
 		imgReader := bytes.NewReader(monster_sprite_2)
 		MonsterSprite2, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if Heart == nil {
+		imgReader := bytes.NewReader(heart)
+		Heart, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if HeartEmpty == nil {
+		imgReader := bytes.NewReader(heart_empty)
+		HeartEmpty, _, _ = ebitenutil.NewImageFromReader(imgReader)
 	}
 }
