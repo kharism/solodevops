@@ -42,6 +42,7 @@ func (s *CombatScene) Load(state *GlobalGameState, director stagehand.SceneContr
 	eventQueueSystem := system.EventQueueSystem{}
 	s.Ecs.AddSystem(playerMovement.Update).
 		AddSystem(playerAttackSystem.Update).
+		AddSystem(system.DamageSystemUpdate).
 		AddSystem(eventQueueSystem.Update).
 		AddRenderer(LayerCharacter, system.Spriterenderer).
 		AddRenderer(LayerHP, HitpointRenderer).
