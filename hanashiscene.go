@@ -32,6 +32,7 @@ func (m *HanashiScene) Draw(screen *ebiten.Image) {
 
 func (s *HanashiScene) Load(state *GlobalGameState, director stagehand.SceneController[*GlobalGameState]) {
 	s.director = director.(*stagehand.SceneDirector[*GlobalGameState]) // This type assertion is important
+	s.scene.Events[0].Execute(s.scene)
 	// s.scene.EventIndex = 0
 
 }

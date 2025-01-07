@@ -36,6 +36,14 @@ func (l *LayouterImpl) GetNamePosition() (x, y int) {
 func (l *LayouterImpl) GetTextPosition() (x, y int) {
 	return 0, 400 - 30
 }
+
+const (
+	TriggerToCombat stagehand.SceneTransitionTrigger = iota
+	TriggerToOpening
+	TriggerToGameOver
+	TriggerToEnding
+)
+
 func main() {
 	flag.Parse()
 	core.DetectKeyboardNext = func() bool {
@@ -57,10 +65,22 @@ func main() {
 	state := &GlobalGameState{}
 	// combatScene := &scene.CombatScene{}
 	// rewardScene := &scene.RewardScene{}
-	// openingScene := &HanashiScene{scene: OpeningScene(Layout)}
+	openingScene := &HanashiScene{scene: OpeningScene(Layout)}
+	mainmenu := MainMenuInstance
+	// mainmenu.musicPlayer = openingScene.scene.AudioInterface
 	combatScene := &CombatScene{}
-	ruleSet := map[stagehand.Scene[*GlobalGameState]][]stagehand.Directive[*GlobalGameState]{}
-	manager := stagehand.NewSceneDirector[*GlobalGameState](combatScene, state, ruleSet)
+	ruleSet := map[stagehand.Scene[*GlobalGameState]][]stagehand.Directive[*GlobalGameState]{
+		mainmenu: {
+			stagehand.Directive[*GlobalGameState]{Dest: openingScene, Trigger: TriggerToOpening},
+		},
+		openingScene: {
+			stagehand.Directive[*GlobalGameState]{Dest: combatScene, Trigger: TriggerToCombat},
+		},
+		combatScene: {
+			stagehand.Directive[*GlobalGameState]{Dest: combatScene, Trigger: TriggerToCombat},
+		},
+	}
+	manager := stagehand.NewSceneDirector[*GlobalGameState](mainmenu, state, ruleSet)
 	if err := ebiten.RunGame(manager); err != nil {
 		log.Fatal(err)
 	}

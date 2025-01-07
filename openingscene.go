@@ -9,6 +9,11 @@ import (
 	"github.com/kharism/hanashi/core"
 )
 
+type dummyScene struct{}
+
+func (d *dummyScene) Execute(scene *core.Scene) {
+
+}
 func OpeningScene(layouter core.GetLayouter) *core.Scene {
 	scene := core.NewScene()
 	scene.SetLayouter(layouter)
@@ -18,6 +23,7 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 	}
 	// spiaShader, _ := core.GetShaderPool().GetShader(core.SEPIA_SHADER)
 	scene.Events = []core.Event{
+		// &dummyScene{},
 		&core.ComplexEvent{
 			Events: []core.Event{
 				&core.PlayBgmEvent{
@@ -32,7 +38,12 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 				core.NewDialogueEvent("Omar", "(*Sneeze*..what a weather)", PixelFontFace),
 			},
 		},
-		core.NewDialogueEvent("Omar", "(it is colder than I expect)", PixelFontFace),
+		&core.ComplexEvent{
+			Events: []core.Event{
+
+				core.NewDialogueEvent("Omar", "(it is colder than I expect)", PixelFontFace),
+			},
+		},
 		core.NewDialogueEvent("Omar", "(Who even suspect 'Remote\nsoftware developer' job meaning\nsoftware developer works in rural\noffice out of nowhere)", PixelFontFace),
 		core.NewDialogueEvent("Omar", "(but the pay's good so no\ncomplaint there)", PixelFontFace),
 		&core.ComplexEvent{
@@ -140,6 +151,6 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 		os.Exit(-1)
 	}
 	scene.AudioInterface = pp
-	scene.Events[0].Execute(scene)
+
 	return scene
 }

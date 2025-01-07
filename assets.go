@@ -38,11 +38,23 @@ var monster_sprite_1 []byte
 //go:embed images/monster_sprite_2.png
 var monster_sprite_2 []byte
 
+//go:embed images/monster_sprite_3.png
+var monster_sprite_3 []byte
+
+//go:embed images/titlescreen.png
+var titlescreen []byte
+
 //go:embed images/heart.png
 var heart []byte
 
+//go:embed images/combat_bg.png
+var combat_bg []byte
+
 //go:embed images/heart_empty.png
 var heart_empty []byte
+
+//go:embed images/menu_btn_bg.png
+var menu_btn_bg []byte
 
 //go:embed images/lobby.png
 var lobby []byte
@@ -62,6 +74,9 @@ var SnowStorm []byte
 //go:embed audio/sound-effect-old-phone-191761_2.mp3
 var PhoneRing []byte
 
+//go:embed audio/creepy_bell.mp3
+var CreepyBell []byte
+
 var PixelFont *text.GoTextFaceSource
 var PixelFontFace *text.GoTextFace
 
@@ -75,6 +90,10 @@ var OmarSprite2 *ebiten.Image
 
 var MonsterSprite1 *ebiten.Image
 var MonsterSprite2 *ebiten.Image
+var MonsterSprite3 *ebiten.Image
+var CombatBg *ebiten.Image
+var MenuButtonBg *ebiten.Image
+var TitleScreen *ebiten.Image
 
 var Heart *ebiten.Image
 var HeartEmpty *ebiten.Image
@@ -125,9 +144,25 @@ func init() {
 		imgReader := bytes.NewReader(monster_sprite_2)
 		MonsterSprite2, _, _ = ebitenutil.NewImageFromReader(imgReader)
 	}
+	if MonsterSprite3 == nil {
+		imgReader := bytes.NewReader(monster_sprite_3)
+		MonsterSprite3, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if CombatBg == nil {
+		imgReader := bytes.NewReader(combat_bg)
+		CombatBg, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if MenuButtonBg == nil {
+		imgReader := bytes.NewReader(menu_btn_bg)
+		MenuButtonBg, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
 	if Heart == nil {
 		imgReader := bytes.NewReader(heart)
 		Heart, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if TitleScreen == nil {
+		imgReader := bytes.NewReader(titlescreen)
+		TitleScreen, _, _ = ebitenutil.NewImageFromReader(imgReader)
 	}
 	if HeartEmpty == nil {
 		imgReader := bytes.NewReader(heart_empty)
