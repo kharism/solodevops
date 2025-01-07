@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/joelschutz/stagehand"
 	"github.com/kharism/callforgetty/component"
 	"github.com/kharism/callforgetty/system"
@@ -21,9 +22,24 @@ func (c *CombatScene) Update() error {
 }
 func (c *CombatScene) Draw(screen *ebiten.Image) {
 	screen.Clear()
+	translate := ebiten.GeoM{}
+	translate.Translate(0, startY)
+	screen.DrawImage(CombatBg, &ebiten.DrawImageOptions{
+		GeoM: translate,
+	})
 	c.Ecs.DrawLayer(LayerDebug, screen)
 	c.Ecs.DrawLayer(LayerCharacter, screen)
 	c.Ecs.DrawLayer(LayerHP, screen)
+	translate.Reset()
+	translate.Translate(0, 380)
+	text.Draw(screen, "Q to attack, arrows to move", PixelFontFace, &text.DrawOptions{
+		DrawImageOptions: ebiten.DrawImageOptions{
+			GeoM: translate,
+		},
+		LayoutOptions: text.LayoutOptions{
+			LineSpacing: 10,
+		},
+	})
 
 }
 func (s *CombatScene) Load(state *GlobalGameState, director stagehand.SceneController[*GlobalGameState]) {
@@ -31,17 +47,24 @@ func (s *CombatScene) Load(state *GlobalGameState, director stagehand.SceneContr
 	// s.scene.EventIndex = 0
 	world := donburi.NewWorld()
 	s.Ecs = ecslib.NewECS(world)
-	entry := LoadPlayer(s.Ecs)
-	LoadEnemy(s.Ecs)
-	playerMovement := system.PlayerMoveSystem{PlayerIndex: entry}
+	player := LoadPlayer(s.Ecs)
+	enemy := LoadEnemy(s.Ecs)
+	component.HitPoint.Get(player).OnDead = func() {
+		s.director.ProcessTrigger(TriggerToGameOver)
+	}
+	component.HitPoint.Get(enemy).OnDead = func() {
+		s.director.ProcessTrigger(TriggerToEnding)
+	}
+	playerMovement := system.PlayerMoveSystem{PlayerIndex: player}
 	playerAttackSystem := system.PlayerAttackSystem{
-		PlayerIndex:        entry,
+		PlayerIndex:        player,
 		PlayerActiveSprite: OmarSprite2,
 		PlayerOriSprite:    OmarSprite1,
 	}
 	eventQueueSystem := system.EventQueueSystem{}
 	s.Ecs.AddSystem(playerMovement.Update).
 		AddSystem(playerAttackSystem.Update).
+		AddSystem(system.EnemyAI.Update).
 		AddSystem(system.DamageSystemUpdate).
 		AddSystem(eventQueueSystem.Update).
 		AddRenderer(LayerCharacter, system.Spriterenderer).
@@ -49,12 +72,12 @@ func (s *CombatScene) Load(state *GlobalGameState, director stagehand.SceneContr
 		AddRenderer(LayerDebug, system.DebugRenderer)
 }
 
-var startY = 300.0
+var startY = 150.0
 var startXPlayer = 30.0
 var startXMonster = 400.0
 
 func LoadPlayer(ecs *ecslib.ECS) *donburi.Entry {
-	entity := ecs.World.Create(component.ScreenPos, component.Sprite, component.Scale, component.HitPoint, component.HitBox)
+	entity := ecs.World.Create(component.ScreenPos, component.PlayerTag, component.Sprite, component.Scale, component.HitPoint, component.HitBox)
 	entry := ecs.World.Entry(entity)
 	component.Sprite.Get(entry).Image = OmarSprite1
 	scrPos := component.ScreenPos.Get(entry)
@@ -75,7 +98,7 @@ func LoadPlayer(ecs *ecslib.ECS) *donburi.Entry {
 	return entry
 }
 func LoadEnemy(ecs *ecslib.ECS) *donburi.Entry {
-	entity := ecs.World.Create(component.ScreenPos, component.Sprite, component.Scale, component.HitPoint, component.HitBox)
+	entity := ecs.World.Create(component.ScreenPos, component.Sprite, component.EnemyRoutine, component.Scale, component.HitPoint, component.HitBox)
 	entry := ecs.World.Entry(entity)
 	component.Sprite.Get(entry).Image = MonsterSprite1
 	scrPos := component.ScreenPos.Get(entry)
@@ -87,6 +110,15 @@ func LoadEnemy(ecs *ecslib.ECS) *donburi.Entry {
 	hp := component.HitPoint.Get(entry)
 	hp.HitPoint = 3
 	hp.MaxHitPoint = 6
+	data := map[string]any{}
+	data[ALREADY_FIRED] = false
+	data[WARM_UP] = nil
+	data[CURRENT_STRATEGY] = ""
+
+	component.EnemyRoutine.Set(entry, &component.EnemyRoutineData{
+		Memory:  data,
+		Routine: monsterRoutine,
+	})
 	component.HitBox.Set(entry, &component.HitBoxData{
 		X:      startXMonster + 32,
 		Y:      startY,
