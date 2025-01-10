@@ -91,7 +91,7 @@ func main() {
 			stagehand.Directive[*GlobalGameState]{Dest: mainmenu, Trigger: TriggerToMain},
 		},
 	}
-	manager := stagehand.NewSceneDirector[*GlobalGameState](endingScene, state, ruleSet)
+	manager := stagehand.NewSceneDirector[*GlobalGameState](mainmenu, state, ruleSet)
 	openingScene.scene.Done = func() {
 		manager.ProcessTrigger(TriggerToCombat)
 	}

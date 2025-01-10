@@ -27,7 +27,7 @@ func (c *CombatScene) Draw(screen *ebiten.Image) {
 	screen.DrawImage(CombatBg, &ebiten.DrawImageOptions{
 		GeoM: translate,
 	})
-	c.Ecs.DrawLayer(LayerDebug, screen)
+	// c.Ecs.DrawLayer(LayerDebug, screen)
 	c.Ecs.DrawLayer(LayerCharacter, screen)
 	c.Ecs.DrawLayer(LayerHP, screen)
 	translate.Reset()
@@ -50,9 +50,16 @@ func (s *CombatScene) Load(state *GlobalGameState, director stagehand.SceneContr
 	player := LoadPlayer(s.Ecs)
 	enemy := LoadEnemy(s.Ecs)
 	component.HitPoint.Get(player).OnDead = func() {
+		s.Ecs.World.Remove(player.Entity())
+		s.Ecs.World.Remove(enemy.Entity())
 		s.director.ProcessTrigger(TriggerToGameOver)
 	}
+	if state.GameData["Spice"].(string) == "yes" {
+		component.HitPoint.Get(enemy).HitPoint = 3
+	}
 	component.HitPoint.Get(enemy).OnDead = func() {
+		s.Ecs.World.Remove(player.Entity())
+		s.Ecs.World.Remove(enemy.Entity())
 		s.director.ProcessTrigger(TriggerToEnding)
 	}
 	playerMovement := system.PlayerMoveSystem{PlayerIndex: player}
@@ -108,7 +115,7 @@ func LoadEnemy(ecs *ecslib.ECS) *donburi.Entry {
 	scale.ScaleX = 2.0
 	scale.ScaleY = 2.0
 	hp := component.HitPoint.Get(entry)
-	hp.HitPoint = 3
+	hp.HitPoint = 6
 	hp.MaxHitPoint = 6
 	data := map[string]any{}
 	data[ALREADY_FIRED] = false
@@ -133,6 +140,7 @@ func (s *CombatScene) Layout(outsideWidth, outsideHeight int) (screenWidth, scre
 func (s *CombatScene) Unload() *GlobalGameState {
 	// your unload code
 	// s.scene.Events[0].Execute(s.scene)
+	component.EventQueue.Queue = []component.Event{}
 
 	return s.State
 }
