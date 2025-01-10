@@ -41,8 +41,14 @@ var monster_sprite_2 []byte
 //go:embed images/monster_sprite_3.png
 var monster_sprite_3 []byte
 
+//go:embed images/monster.png
+var monster []byte
+
 //go:embed images/titlescreen.png
 var titlescreen []byte
+
+//go:embed images/datacenter.png
+var datacenter []byte
 
 //go:embed images/heart.png
 var heart []byte
@@ -59,6 +65,15 @@ var menu_btn_bg []byte
 //go:embed images/lobby.png
 var lobby []byte
 
+//go:embed images/severed_hand.png
+var severed_hand []byte
+
+//go:embed images/man_in_black.png
+var man_in_black []byte
+
+//go:embed images/end.png
+var end []byte
+
 //go:embed audio/bass_slap_2.mp3
 var BassMp3 []byte
 
@@ -74,6 +89,21 @@ var SnowStorm []byte
 //go:embed audio/sound-effect-old-phone-191761_2.mp3
 var PhoneRing []byte
 
+//go:embed audio/phone_dialing.mp3
+var PhoneDial []byte
+
+//go:embed audio/door-slam-79889.mp3
+var DoorSlam []byte
+
+//go:embed audio/door-lock-82542.mp3
+var DoorLock []byte
+
+//go:embed audio/door-bang-1wav-14449.mp3
+var DoorBang []byte
+
+//go:embed audio/thud-82914.mp3
+var Thud []byte
+
 //go:embed audio/creepy_bell.mp3
 var CreepyBell []byte
 
@@ -88,12 +118,17 @@ var Lobby *ebiten.Image
 var OmarSprite1 *ebiten.Image
 var OmarSprite2 *ebiten.Image
 
+var Monster *ebiten.Image
 var MonsterSprite1 *ebiten.Image
 var MonsterSprite2 *ebiten.Image
 var MonsterSprite3 *ebiten.Image
 var CombatBg *ebiten.Image
 var MenuButtonBg *ebiten.Image
 var TitleScreen *ebiten.Image
+var SeveredHand *ebiten.Image
+var DataCenter *ebiten.Image
+var ManInBlack *ebiten.Image
+var End *ebiten.Image
 
 var Heart *ebiten.Image
 var HeartEmpty *ebiten.Image
@@ -167,5 +202,25 @@ func init() {
 	if HeartEmpty == nil {
 		imgReader := bytes.NewReader(heart_empty)
 		HeartEmpty, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if SeveredHand == nil {
+		imgReader := bytes.NewReader(severed_hand)
+		SeveredHand, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if DataCenter == nil {
+		imgReader := bytes.NewReader(datacenter)
+		DataCenter, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if Monster == nil {
+		imgReader := bytes.NewReader(monster)
+		Monster, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if ManInBlack == nil {
+		imgReader := bytes.NewReader(man_in_black)
+		ManInBlack, _, _ = ebitenutil.NewImageFromReader(imgReader)
+	}
+	if End == nil {
+		imgReader := bytes.NewReader(end)
+		End, _, _ = ebitenutil.NewImageFromReader(imgReader)
 	}
 }

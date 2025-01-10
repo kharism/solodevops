@@ -20,6 +20,7 @@ const (
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 type GlobalGameState struct {
+	GameData map[string]any
 }
 
 type LayouterImpl struct {
@@ -42,6 +43,7 @@ const (
 	TriggerToOpening
 	TriggerToGameOver
 	TriggerToEnding
+	TriggerToMain
 )
 
 func main() {
@@ -66,9 +68,11 @@ func main() {
 	// combatScene := &scene.CombatScene{}
 	// rewardScene := &scene.RewardScene{}
 	openingScene := &HanashiScene{scene: OpeningScene(Layout)}
+	endingScene := &HanashiScene{scene: EndingScene(Layout)}
 	mainmenu := MainMenuInstance
 	// mainmenu.musicPlayer = openingScene.scene.AudioInterface
 	combatScene := &CombatScene{}
+	gameover := &GameOverScene{}
 	ruleSet := map[stagehand.Scene[*GlobalGameState]][]stagehand.Directive[*GlobalGameState]{
 		mainmenu: {
 			stagehand.Directive[*GlobalGameState]{Dest: openingScene, Trigger: TriggerToOpening},
@@ -77,10 +81,23 @@ func main() {
 			stagehand.Directive[*GlobalGameState]{Dest: combatScene, Trigger: TriggerToCombat},
 		},
 		combatScene: {
-			stagehand.Directive[*GlobalGameState]{Dest: combatScene, Trigger: TriggerToCombat},
+			stagehand.Directive[*GlobalGameState]{Dest: gameover, Trigger: TriggerToGameOver},
+			stagehand.Directive[*GlobalGameState]{Dest: endingScene, Trigger: TriggerToEnding},
+		},
+		gameover: {
+			stagehand.Directive[*GlobalGameState]{Dest: mainmenu, Trigger: TriggerToMain},
+		},
+		endingScene: {
+			stagehand.Directive[*GlobalGameState]{Dest: mainmenu, Trigger: TriggerToMain},
 		},
 	}
-	manager := stagehand.NewSceneDirector[*GlobalGameState](mainmenu, state, ruleSet)
+	manager := stagehand.NewSceneDirector[*GlobalGameState](endingScene, state, ruleSet)
+	openingScene.scene.Done = func() {
+		manager.ProcessTrigger(TriggerToCombat)
+	}
+	endingScene.scene.Done = func() {
+		manager.ProcessTrigger(TriggerToMain)
+	}
 	if err := ebiten.RunGame(manager); err != nil {
 		log.Fatal(err)
 	}

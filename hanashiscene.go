@@ -33,7 +33,7 @@ func (m *HanashiScene) Draw(screen *ebiten.Image) {
 func (s *HanashiScene) Load(state *GlobalGameState, director stagehand.SceneController[*GlobalGameState]) {
 	s.director = director.(*stagehand.SceneDirector[*GlobalGameState]) // This type assertion is important
 	s.scene.Events[0].Execute(s.scene)
-	// s.scene.EventIndex = 0
+	s.State = state
 
 }
 func (s *HanashiScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -45,8 +45,18 @@ func (s *HanashiScene) Unload() *GlobalGameState {
 	s.scene.EventIndex = 0
 	s.scene.CurCharName = ""
 	s.scene.CurDialog = ""
+	s.scene.ViewableCharacters = []*core.Character{}
 	// s.scene.ViewableCharacters = []*core.Character{}
 	s.scene.VisibleDialog = ""
+	if s.State == nil {
+		s.State = &GlobalGameState{}
+	}
+	if s.State.GameData == nil {
+		s.State.GameData = map[string]any{}
+	}
+	for key, val := range s.scene.SceneData {
+		s.State.GameData[key] = val
+	}
 
 	return s.State
 }
