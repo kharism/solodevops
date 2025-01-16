@@ -26,7 +26,7 @@ func EndingScene(layouter core.GetLayouter) *core.Scene {
 					Type:  core.TypeMP3,
 				},
 				core.NewBgChangeEvent(Lobby, core.MoveParam{Sx: 0, Sy: 0}, nil),
-				core.NewCharacterAddEvent("Omar", &core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
+				core.NewCharacterAddEvent("Omar", core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
 					&core.ScaleParam{Sx: 4, Sy: 4}),
 				core.NewDialogueEvent("Omar", "*pant* *pant*\n(It died?)", PixelFontFace),
 			},
@@ -42,7 +42,7 @@ func EndingScene(layouter core.GetLayouter) *core.Scene {
 		&core.ComplexEvent{
 			Events: []core.Event{
 				core.NewCharacterAddEvent("Smith",
-					&core.MoveParam{Sy: 120, Sx: -300, Tx: 0, Ty: 120, Speed: 10},
+					core.MoveParam{Sy: 120, Sx: -300, Tx: 0, Ty: 120, Speed: 10},
 					&core.ScaleParam{Sx: 4, Sy: 4}),
 				core.NewDialogueEvent("", "", PixelFontFace),
 			},

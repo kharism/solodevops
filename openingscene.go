@@ -33,7 +33,7 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 				},
 				core.NewBgChangeEvent(WarehouseBg, core.MoveParam{Sx: 0, Sy: 0}, nil),
 				core.NewCharacterAddEvent("Omar",
-					&core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
+					core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
 					&core.ScaleParam{Sx: 4, Sy: 4},
 				),
 				core.NewDialogueEvent("Omar", "(*Sneeze*..what a weather)", PixelFontFace),
@@ -49,11 +49,18 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 		core.NewDialogueEvent("Omar", "(but the pay's good so no\ncomplaint there)", PixelFontFace),
 		&core.ComplexEvent{
 			Events: []core.Event{
-				&core.PlaySfxEvent{Audio: &PhoneRing, Type: core.TypeMP3},
+				&core.StopBgmEvent{},
+				&core.PlaySfxEvent{Audio: &PhoneRing, Type: core.TypeMP3, Name: "ring1"},
 				core.NewDialogueEvent("", "", PixelFontFace),
 			},
 		},
-		core.NewDialogueEvent("Omar", "Yes father?", PixelFontFace),
+		&core.ComplexEvent{
+			Events: []core.Event{
+				&core.StopSfxEvent{Name: "ring1"},
+				core.NewDialogueEvent("Omar", "Yes father?", PixelFontFace),
+			},
+		},
+
 		core.NewDialogueEvent("Omar", "No, I won't be home at the\nend of the year. I need the\nextra money for my wedding.", PixelFontFace),
 		core.NewDialogueEvent("Omar", "I'll do my best to go home\nnext Eid.", PixelFontFace),
 		core.NewDialogueEvent("Omar", "No. There's no cryptid\nmurder here. You should stop\nwatching conspiracy videos.", PixelFontFace),
@@ -83,7 +90,7 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 		&core.ComplexEvent{
 			Events: []core.Event{
 				core.NewCharacterAddEvent("Omar",
-					&core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
+					core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
 					&core.ScaleParam{Sx: 4, Sy: 4},
 				),
 				core.NewCharacterAddShaderEvent("Omar", &core.ShaderParam{Shader: spiaShader}),
@@ -111,7 +118,7 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 					Type:  core.TypeMP3,
 				},
 				core.NewCharacterAddEvent("Omar",
-					&core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
+					core.MoveParam{Sy: 120, Sx: 600, Tx: 460, Ty: 120, Speed: 10},
 					&core.ScaleParam{Sx: 4, Sy: 4},
 				),
 				core.NewCharacterAddShaderEvent("Omar", &core.ShaderParam{Shader: nil}),
@@ -171,7 +178,7 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 		&core.ComplexEvent{
 			Events: []core.Event{
 				core.NewCharacterAddEvent("Monster",
-					&core.MoveParam{Sy: 120, Sx: -300, Tx: 0, Ty: 120, Speed: 10},
+					core.MoveParam{Sy: 120, Sx: -300, Tx: 0, Ty: 120, Speed: 10},
 					&core.ScaleParam{Sx: 4, Sy: 4},
 				),
 				core.NewDialogueEvent("", "*the monster gnaw at tom's body*", PixelFontFace),
@@ -262,7 +269,7 @@ func OpeningScene(layouter core.GetLayouter) *core.Scene {
 		&core.ComplexEvent{
 			Events: []core.Event{
 				core.NewCharacterAddEvent("Monster",
-					&core.MoveParam{Sy: 120, Sx: -300, Tx: 0, Ty: 120, Speed: 10},
+					core.MoveParam{Sy: 120, Sx: -300, Tx: 0, Ty: 120, Speed: 10},
 					&core.ScaleParam{Sx: 4, Sy: 4}),
 				core.NewDialogueEvent("Omar", "MOTHERFORKER!!!", PixelFontFace),
 				&core.StopBgmEvent{},

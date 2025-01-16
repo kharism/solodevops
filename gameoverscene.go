@@ -25,15 +25,15 @@ func (c *GameOverScene) Draw(screen *ebiten.Image) {
 	geom := ebiten.GeoM{}
 	geom.Scale(4, 4)
 	geom.Translate(300, 200)
-	colorm := ebiten.ColorM{}
-	colorm.Translate(1, 0, 0, 1)
+	colorm := ebiten.ColorScale{}
+	colorm.Scale(1, 0, 0, 1)
 	text.Draw(screen, "YOU DIED", PixelFontFace, &text.DrawOptions{
 		LayoutOptions: text.LayoutOptions{
 			PrimaryAlign: text.AlignCenter,
 		},
 		DrawImageOptions: ebiten.DrawImageOptions{
-			GeoM:   geom,
-			ColorM: colorm,
+			GeoM:       geom,
+			ColorScale: colorm,
 		},
 	})
 }
